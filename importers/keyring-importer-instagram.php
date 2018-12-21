@@ -141,7 +141,7 @@ class Keyring_Instagram_Importer extends Keyring_Importer_Base {
 		// Parse/convert everything to WP post structs
 		foreach ( $importdata->data as $post ) {
 			// Post title can be empty for Images, but it makes them easier to manage if they have *something*
-			$post_title = __( 'Posted on Instagram', 'keyring' );
+			//$post_title = __( 'Posted on Instagram', 'keyring' );
 			if ( !empty( $post->caption ) ) {
 				$post_title = strip_tags( $post->caption->text );
 			}
@@ -288,8 +288,10 @@ class Keyring_Instagram_Importer extends Keyring_Importer_Base {
 				// Mark post format, based on what we actually imported
 				if ( $instagram_video ) {
 					set_post_format( $post_id, 'video' );
+					set_post_kind( $post_id, 'video' );
 				} else {
 					set_post_format( $post_id, 'image' );
+					set_post_kind( $post_id, 'photo' );
 				}
 
 				// Update Category

@@ -122,14 +122,15 @@ class Keyring_Fitbit_Importer extends Keyring_Importer_Base {
 		$tags          = $this->get_option( 'tags' );
 
 		// Construct a post body containing a text-based summary of the data.
-		$post_title    = __( 'Fitbit Summary', 'keyring' );
+		$post_title    = __( 'Fitbit Summary for' . $posts_date , 'keyring' );
 
 		// Using %s because the formatted number has commas/periods in it
-		$post_content  = sprintf( __( 'Walked %s steps.' ), number_format_i18n( $importdata->summary->steps ) );
+$post_content = '<i class="fa fa-blind"></i> Walked ' . number_format_i18n( $importdata->summary->steps) . ' steps. <br \><i class="fa fa-road"></i> Distance: ' . number_format_i18n( $importdata->summary->distances[1]->distance) . 'kms.';
 
 		// Other bits
 		$post_author = $this->get_option( 'author' );
 		$post_status = $this->get_option( 'status', 'publish' );
+		$post_visibility = 'private';
 		$fitbit_raw  = $importdata; // Keep all of the things
 
 		// Build the post array, and hang onto it along with the others
@@ -139,6 +140,7 @@ class Keyring_Fitbit_Importer extends Keyring_Importer_Base {
 			'post_content',
 			'post_title',
 			'post_status',
+			'post_visibility',
 			'post_category',
 			'tags',
 			'fitbit_raw'
@@ -179,7 +181,8 @@ class Keyring_Fitbit_Importer extends Keyring_Importer_Base {
 				wp_set_object_terms( $post_id, self::LABEL, 'keyring_services' );
 
 				set_post_format( $post_id, 'status' );
-
+				//Set post kind to checkin
+ 				set_post_kind( $post_id, 'exercise' );
 				// Update Category
 				wp_set_post_categories( $post_id, $post_category );
 

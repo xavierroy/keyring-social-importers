@@ -182,7 +182,7 @@ function Keyring_Strava_Importer() {
 						case 'Hike':
 							$post_content = sprintf(
 								// Translators: Hiked [distance] in [duration].
-								__( 'Hiked %1$s in %2$s.' ),
+								__( '<i class="fas fa-hiking"></i> Hiked %1$s in %2$s.' ),
 								$this->format_distance( $post->distance ),
 								$this->format_duration( $post->moving_time )
 							);
@@ -191,7 +191,7 @@ function Keyring_Strava_Importer() {
 						case 'Run':
 							$post_content = sprintf(
 								// Translators: Ran [distance] in [duration].
-								__( 'Ran %1$s in %2$s.' ),
+								__( '<i class="fas fa-running"></i> Ran %1$s in %2$s.' ),
 								$this->format_distance( $post->distance ),
 								$this->format_duration( $post->moving_time )
 							);
@@ -200,7 +200,7 @@ function Keyring_Strava_Importer() {
 						case 'Ride':
 							$post_content = sprintf(
 								// Translators: Cycled [distance] in [duration].
-								__( 'Cycled %1$s in %2$s.' ),
+								__( '<i class="fas fa-bicycle"></i> Cycled %1$s in %2$s.' ),
 								$this->format_distance( $post->distance ),
 								$this->format_duration( $post->moving_time )
 							);
@@ -211,14 +211,14 @@ function Keyring_Strava_Importer() {
 							if ( $post->has_heartrate ) {
 								$post_content = sprintf(
 									// Translators: Worked out for [duration] with a max heartrate of [heartrate]
-									__( 'Worked out for %1$s with a max heartrate of %2$d.' ),
+									__( '<i class="fas fa-dumbbell"></i> Worked out for %1$s with a max heartrate of %2$d.' ),
 									$this->format_duration( $post->moving_time ),
 									$post->max_heartrate
 								);
 							} else {
 								$post_content = sprintf(
 									// Translators: Worked out for [duration].
-									__( 'Worked out for %1$s.' ),
+									__( '<i class="fas fa-dumbbell"></i> Worked out for %1$s.' ),
 									$this->format_duration( $post->moving_time )
 								);
 							}
@@ -303,6 +303,8 @@ function Keyring_Strava_Importer() {
 					// Set the post format.
 					set_post_format( $post_id, 'status' );
 
+					// Set the post kind.
+					set_post_kind( $post_id, 'exercise' );
 					// Update Category.
 					wp_set_post_categories( $post_id, $post_category );
 

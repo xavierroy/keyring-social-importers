@@ -158,8 +158,31 @@ class Keyring_Foursquare_Importer extends Keyring_Importer_Base {
 			$post_category = array( $this->get_option( 'category' ) );
 
 			// Construct a post body
-			if ( ! empty( $post->venue->id ) ) {
-				$venue_link = '<a href="' . esc_url( 'http://foursquare.com/v/' . $post->venue->id ) . '" class="foursquare-link">' . esc_html( $post->venue->name ) . '</a>';
+
+			// Include any comment/shout the user made when posting
+			$tags = $this->get_option( 'tags' );
+			if ( isset( $post->shout ) ) {
+				// Any hashtags used in a note will be applied to the Post as tags in WP
+				if ( preg_match_all( '/(^|[(\[\s])#(\w+)/', $post->shout, $tag ) ) {
+					$tags = array_merge( $tags, $tag[2] );
+				}
+
+				$post_content = "<blockquote class='foursquare-note'>" . $post->shout . "</blockquote>";
+
+				// Check for Mayorship
+
+				if ($post->isMayor){
+					$post_content .= "<br /> ðŸ‘‘ <br/>";
+				}
+
+				// Check for Stickers
+				if ( ! empty( $post->sticker->id ) ) {
+						$post_content .= '<br /> <img src="https://irs1.4sqi.net/img/sticker/60' . $post->sticker->image->name . '" alt="' . $post->sticker->name . '" /><br />' ;
+					}
+			}
+
+					if ( ! empty( $post->venue->id ) ) {
+				$venue_link = '<a href="' . esc_url( 'https://foursquare.com/v/' . $post->venue->id ) . '" class="foursquare-link">' . esc_html( $post->venue->name ) . '</a>';
 			} else {
 				$venue_link = $post->venue->name;
 			}
@@ -172,11 +195,11 @@ class Keyring_Foursquare_Importer extends Keyring_Importer_Base {
 				);
 			} else {
 				$post_content = sprintf(
-					__( 'Checked in at %s.', 'keyring' ),
+					__( 'Location: %s.', 'keyring' ),
 					$venue_link
 				);
 			}
-
+/*
 			// Include any comment/shout the user made when posting
 			$tags = $this->get_option( 'tags' );
 			if ( isset( $post->shout ) ) {
@@ -187,7 +210,7 @@ class Keyring_Foursquare_Importer extends Keyring_Importer_Base {
 
 				$post_content .= "\n\n<blockquote class='foursquare-note'>" . $post->shout . "</blockquote>";
 			}
-
+*/
 			// Include geo Data. Note if it was an "off the grid" check-in
 			$geo = array(
 				'lat'  => $post->venue->location->lat,
@@ -309,7 +332,8 @@ class Keyring_Foursquare_Importer extends Keyring_Importer_Base {
 
 				// Mark it as an aside
 				set_post_format( $post_id, 'status' );
-
+				//Set post kind to checkin
+				set_post_kind( $post_id, 'checkin' );
 				// Update Category
 				wp_set_post_categories( $post_id, $post_category );
 
@@ -318,6 +342,10 @@ class Keyring_Foursquare_Importer extends Keyring_Importer_Base {
 				if ( is_array( $tags ) && count( $tags ) ) {
 					wp_set_post_terms( $post_id, implode( ',', $tags ) );
 				}
+				//Add Syndication Link
+				$syn_link = esc_url( 'https://swarmapp.com/xavierroy/checkin/' . $foursquare_id);
+				add_post_meta ($post_id, 'mf2_syndication', $syn_link );
+				add_post_meta ($post_id, 'syndication_urls', $syn_link);
 
 				// Store geodata if it's available
 				if ( ! empty( $geo ) ) {

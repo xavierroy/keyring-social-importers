@@ -305,6 +305,12 @@ function Keyring_Strava_Importer() {
 
 					// Set the post kind.
 					set_post_kind( $post_id, 'exercise' );
+
+					// add syndication link
+					add_syndication_link($strava_permalink, $post_id );
+					syn_add_links( $strava_permalink, $post_id );
+
+
 					// Update Category.
 					wp_set_post_categories( $post_id, $post_category );
 
